@@ -13,8 +13,8 @@ class App extends Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
+    this.login = this.login.bind(this); 
+    this.logout = this.logout.bind(this); 
   }
   
   handleChange(e) {
@@ -22,6 +22,7 @@ class App extends Component {
       [e.target.name]: e.target.value
     });
   }
+
   logout() {
     auth.signOut()
       .then(() => {
@@ -30,12 +31,12 @@ class App extends Component {
         });
       });
   }
-    login() {
-      auth.signInWithPopup(provider) 
-        .then((result) => {
-          const user = result.user;
-          this.setState({
-            user
+  login() {
+    auth.signInWithPopup(provider) 
+      .then((result) => {
+        const user = result.user;
+        this.setState({
+          user
           });
         });
     }
@@ -57,7 +58,7 @@ class App extends Component {
   componentDidMount() {
     auth.onAuthStateChanged((user) => {
       if (user) {
-        this.setState({ user });
+        this.setState({ user});
       } 
     });
     const itemsRef = firebase.database().ref('items');
@@ -85,21 +86,23 @@ class App extends Component {
   render() {
     return (
       <div className='app'>
-      <header>
-        <div className="wrapper">
-          <h1>Pot Luck Sign Up</h1>
-          {this.state.user ?
-            <button onClick={this.logout}>Logout</button>                
-          :
-            <button onClick={this.login}>Log In</button>              
-          }
-        </div>
-      </header>
+  <header>
+    <div className="wrapper">
+      <h1>Potluck Sign Up</h1>
       {this.state.user ?
+        <button onClick={this.logout}>Logout</button>                
+        :
+        <button onClick={this.login}>Log In</button>              
+      }
+    </div>
+  </header>
+  {this.state.user ?
+
     <div>
       <div className='user-profile'>
         <img src={this.state.user.photoURL} />
       </div>
+
       <div className='container'>
         <section className='add-item'>
           <form onSubmit={this.handleSubmit}>
@@ -108,31 +111,37 @@ class App extends Component {
              <button>Add Item</button>
           </form>
         </section>
-      <section className='display-item'>
-        <div className="wrapper">
-          <ul>
-          {this.state.items.map((item) => {
-          return (
-            <li key={item.id}>
-              <h3>{item.title}</h3>
-              <p>brought by: {item.user}
-                 {item.user === this.state.user.displayName || item.user === this.state.user.email ?
-                   <button onClick={() => this.removeItem(item.id)}>Remove Item</button> : null}
-              </p>
-            </li>
-          )
+
+        <section className='display-item'>
+          <div className="wrapper">
+           <ul>
+            {this.state.items.map((item) => {
+             return (
+              <li key={item.id}>
+               <h3>{item.title}</h3>
+                <p>brought by: {item.user}
+                  {item.user === this.state.user.displayName || item.user === this.state.user.email ?
+                    <button onClick={() => this.removeItem(item.id)}>Remove Item</button> : null}
+                </p>
+              </li>
+            )
         })}
       </ul>
     </div>
-  </section> 
- </div>
-</div>
+  </section>
+
+
+      </div>
+    </div>
     :
     <div className='wrapper'>
       <p>You must be logged in to see the potluck list and submit to it.</p>
-    </div>   
-  }
     </div>
+
+  }
+</div>
+
+      
     );
   }
 }
